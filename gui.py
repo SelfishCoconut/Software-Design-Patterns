@@ -44,11 +44,34 @@ class MazeGUI:
 
     def visitarHabitacion(self, hab):
         self.dibujarRectangulo(hab.forma)
+        self.canvas.create_text(hab.forma.punto.x, hab.forma.punto.y, text=str(hab.num), font=("Arial", 22))
+
 
     def visitarPared(self, pared):
         pass
     def visitarPuerta(self, puerta):
-        pass
+        hab1 = puerta.lado1
+        hab2 = puerta.lado2
+        
+        x1 = hab1.forma.punto.x + hab1.forma.extent.x/2
+        y1 = hab1.forma.punto.y + hab1.forma.extent.y/2
+        x2 = hab2.forma.punto.x + hab2.forma.extent.x/2
+        y2 = hab2.forma.punto.y + hab2.forma.extent.y/2
+
+        # Calcula el punto medio entre las dos habitaciones
+        x_medio = (x1 + x2) / 2
+        y_medio = (y1 + y2) / 2
+
+        # Determine the direction of the door based on room positions
+        if hab1.forma.punto.x != hab2.forma.punto.x:  # Vertical alignment
+            width = 10
+            height = 40
+        else:  # Horizontal alignment
+            width = 40
+            height = 10
+        
+        # Draw the door as a rectangle along the edge of the rooms
+        self.canvas.create_rectangle(x_medio - width / 2, y_medio - height / 2, x_medio + width / 2, y_medio + height / 2, fill="lightgray")
     def visitarBomba(self, bomba):
         pass
     def visitarTunel(self, tunel):
