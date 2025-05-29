@@ -1,7 +1,7 @@
 import tkinter as tk
 from director import Director
 from point import Point
-
+import estado_puerta
 class MazeGUI:
     def __init__(self, master, laberinto_file):
         self.master = master
@@ -71,7 +71,11 @@ class MazeGUI:
             height = 10
         
         # Draw the door as a rectangle along the edge of the rooms
-        self.canvas.create_rectangle(x_medio - width / 2, y_medio - height / 2, x_medio + width / 2, y_medio + height / 2, fill="lightgray")
+        if isinstance(puerta.estadoPuerta, estado_puerta.Abierta):
+            color = "green"
+        else:
+            color = "red"
+        self.canvas.create_rectangle(x_medio - width / 2, y_medio - height / 2, x_medio + width / 2, y_medio + height / 2, fill=color)
 
     def visitarPersonaje(self, personaje):
         habitacion = personaje.posicion
