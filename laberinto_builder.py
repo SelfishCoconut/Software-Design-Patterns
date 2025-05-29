@@ -22,8 +22,9 @@ class LaberintoBuilder:
 
     def fabricarJuego(self):
         self.juego=Juego()
-        self.juego.prototipo = self.laberinto
-        self.juego.laberinto = copy.deepcopy(self.juego.prototipo)
+        self.juego.prototipo = copy.deepcopy(self.laberinto)
+        self.juego.laberinto = self.laberinto
+#        self.juego.laberinto = copy.deepcopy(self.juego.prototipo)
 
     def fabricarLaberinto(self):
         self.laberinto = Laberinto()

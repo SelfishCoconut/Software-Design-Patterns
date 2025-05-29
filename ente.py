@@ -19,6 +19,9 @@ class Ente:
             print(f"El ente ha muerto")
             self.estadoEnte.morir(self)
 
+    def aceptar(self, unVisitor):
+        raise NotImplementedError
+
 class Personaje(Ente):
     def __init__(self, vidas, poder, juego, nombre):
         super().__init__()
@@ -31,6 +34,9 @@ class Personaje(Ente):
 
     def atacar(self):
         self.juego.buscarBicho()
+    
+    def aceptar(self, unVisitor):
+        unVisitor.visitarPersonaje(self)
 
     def __str__(self):
         return self.nombre

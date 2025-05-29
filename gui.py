@@ -21,6 +21,7 @@ class MazeGUI:
         self.juego.agregar_personaje("Pepe")
 
     def init_ui(self):
+        
         self.master.title("Maze Game")
         self.canvas = tk.Canvas(self.master, width=1150, height=900, bg="white")
         self.canvas.pack()
@@ -29,9 +30,9 @@ class MazeGUI:
         for habitacion in self.juego.laberinto.hijos:
             print("num-punto",habitacion.num,habitacion.forma.punto.x,habitacion.forma.punto.y)
         self.dibujarLaberinto()
-       #self.draw_maze()
-        #self.draw_person()
-        #self.draw_bichos()
+
+        self.draw_person()
+        self.draw_bichos()
 
     def calcularLaberinto(self):
         self.calcularPosicion()
@@ -45,7 +46,6 @@ class MazeGUI:
     def visitarHabitacion(self, hab):
         self.dibujarRectangulo(hab.forma)
         self.canvas.create_text(hab.forma.punto.x, hab.forma.punto.y, text=str(hab.num), font=("Arial", 22))
-
 
     def visitarPared(self, pared):
         pass
@@ -72,6 +72,19 @@ class MazeGUI:
         
         # Draw the door as a rectangle along the edge of the rooms
         self.canvas.create_rectangle(x_medio - width / 2, y_medio - height / 2, x_medio + width / 2, y_medio + height / 2, fill="lightgray")
+
+    def visitarPersonaje(self, personaje):
+        habitacion = personaje.posicion
+        x = habitacion.forma.punto.x + habitacion.forma.extent.x / 2 - 30
+        y = habitacion.forma.punto.y + habitacion.forma.extent.y / 2
+        self.canvas.create_oval(x - 10, y - 10, x + 10, y + 10, fill="blue")
+
+    def visitarBicho(self, bicho):
+        habitacion = bicho.posicion
+        x = habitacion.forma.punto.x + habitacion.forma.extent.x / 2
+        y = habitacion.forma.punto.y + habitacion.forma.extent.y / 2
+        self.canvas.create_oval(x - 10, y - 10, x + 10, y + 10, fill="red")
+
     def visitarBomba(self, bomba):
         pass
     def visitarTunel(self, tunel):
@@ -81,13 +94,11 @@ class MazeGUI:
         self.canvas.create_rectangle(forma.punto.x, forma.punto.y, forma.punto.x+forma.extent.x, forma.punto.y+forma.extent.y, fill="lightgray")
     
     def draw_person(self):
-        # Implementation to draw the person on the canvas
-        pass
+        self.juego.personaje.aceptar(self)
 
     def draw_bichos(self):
-        # Implementation to draw the bichos on the canvas
-        pass
-
+        for bicho in self.juego.bichos:
+           bicho.aceptar(self)
     def calcularPosicion(self):
         habitacion1 = self.juego.obtenerHabitacion(1)
         habitacion1.forma.punto = Point(0, 0)

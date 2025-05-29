@@ -30,6 +30,9 @@ class Bicho(Ente):
 
     def estaVivo(self):
         return self.vidas > 0
+    
+    def aceptar(self, unVisitor):
+        unVisitor.visitarBicho(self)
 
     def __str__(self):
         return "Soy un bicho"+self.modo.__str__()
