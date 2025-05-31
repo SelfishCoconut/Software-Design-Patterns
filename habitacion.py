@@ -5,6 +5,7 @@ class Habitacion(Contenedor):
         super().__init__()
         self.num = num
         self.entidades=[]
+        self.visitado = False
 
     def entrar(self, alguien):
         print(f"Entrando en la habitación {self.num}")
@@ -12,8 +13,17 @@ class Habitacion(Contenedor):
             alguien.posicion.salir(alguien)
         alguien.posicion=self
         self.entidades.append(alguien)
+        if alguien.esPersonaje() == True:
+            self.visitado = True
 
-    
+    def aceptar(self, unVisitor):
+        if not self.visitado:
+            return
+        self.visitarContenedor(unVisitor)
+        for hijo in self.hijos:
+            hijo.aceptar(unVisitor)
+        self.forma.aceptar(unVisitor)
+
     def salir(self, alguien):
         self.entidades.remove(alguien)
         alguien.posicion=None

@@ -63,6 +63,7 @@ class MazeGUI:
                 fill="lightgray"
             )
         }))
+        self.master.after(0, lambda: self.canvas.tag_lower(self.visuales[hash(forma)]))
 
     def draw_person(self):
         
@@ -71,17 +72,17 @@ class MazeGUI:
         self.master.after(0, lambda: self.canvas.delete(self.visuales[data]))
     
     def draw_caminar(self, ente):
-        if ente == None:
-            return
         self.master.after(0, self._draw_caminar, ente)
 
     def _draw_caminar(self, ente):
-        self.canvas.delete(self.visuales[hash(ente)])
-        ente.aceptar(self)
+        if self.visuales.get(hash(ente)):
+            self.canvas.delete(self.visuales[hash(ente)])
+            ente.aceptar(self)
 
     def draw_bichos(self):
         for bicho in self.juego.bichos:
-            bicho.aceptar(self)
+            if bicho.posicion.visitado == True:
+                bicho.aceptar(self)
 
     def calcularPosicion(self):
         habitacion1 = self.juego.obtenerHabitacion(1)
@@ -91,10 +92,6 @@ class MazeGUI:
 
     def visitarHabitacion(self, hab):
         self.dibujarRectangulo(hab.forma)
-        self.canvas.create_text(
-            hab.forma.punto.x, hab.forma.punto.y, 
-            text=str(hab.num), font=("Arial", 22)
-        )
 
     def visitarPared(self, pared):
         pass

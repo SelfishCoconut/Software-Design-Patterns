@@ -21,3 +21,5 @@ class EventListener:
             self.gui.draw_bicho_muere(event['data'])
         elif event['type'] == 'caminar':
             self.gui.draw_caminar(event['data'])
+            if event['data'].esPersonaje():
+                event['data'].posicion.aceptar(self.gui)

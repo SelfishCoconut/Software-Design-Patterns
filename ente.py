@@ -36,6 +36,9 @@ class Ente:
             print("MUERTO EN: ", self.posicion.num)
             self.estadoEnte.morir(self)
 
+    def esPersonaje(self):
+        return False
+
     def actua(self):
         pass
     def estaVivo(self):
@@ -61,6 +64,9 @@ class Personaje(Ente):
 
     def clonarLaberinto(self,tunel):
         tunel.puedeClonarLaberinto()
+
+    def esPersonaje(self):
+        return True
 
     def atacar(self):
         enemigo = self.posicion.buscarEnemigo(self)
