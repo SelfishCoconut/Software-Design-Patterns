@@ -11,6 +11,8 @@ class EstadoPuerta:
     def entrar(self, puerta, alguien):
         pass
 
+    def esAbierta(self):
+        pass
 
 class Abierta(EstadoPuerta):
     def __init__(self):
@@ -26,6 +28,8 @@ class Abierta(EstadoPuerta):
     def entrar(self, puerta, alguien):
         puerta.puedeEntrar(alguien)
 
+    def esAbierta(self):
+        return True
 
 class Cerrada(EstadoPuerta):
     def __init__(self):
@@ -40,3 +44,6 @@ class Cerrada(EstadoPuerta):
 
     def entrar(self, puerta, alguien):
         pass
+
+    def esAbierta(self):
+        return False

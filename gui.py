@@ -2,6 +2,10 @@ import tkinter as tk
 from director import Director
 from point import Point
 import estado_puerta
+import maze_gui_visitor as vs
+import event_manager as em
+import threading
+
 class MazeGUI:
     def __init__(self, master, laberinto_file):
         self.master = master
@@ -10,7 +14,9 @@ class MazeGUI:
         self.canvas = None
         self.ancho = 0
         self.alto = 0
-
+        self.visuales = {}
+        self.event_manager = None
+        self.event_listener = None        
         self.load_laberinto()
         self.init_ui()
 
@@ -19,18 +25,23 @@ class MazeGUI:
         director.procesar(self.laberinto_file)
         self.juego = director.obtenerJuego()
         self.juego.agregar_personaje("Pepe")
-
+        self.juego.abrir_puertas()
+        self.master.after(0, self.juego.lanzarPersonaje)
+        self.master.after(0, self.juego.lanzarBichos)
+    
     def init_ui(self):
-        
         self.master.title("Maze Game")
         self.canvas = tk.Canvas(self.master, width=1150, height=900, bg="white")
         self.canvas.pack()
 
+        self.event_manager = em.EventManager()
+        self.event_listener = em.EventListener(self)
+        self.event_manager.add_listener(self.event_listener)
+        [bicho.agregarEvent_manager(self.event_manager) for bicho in self.juego.bichos]
         self.calcularLaberinto()
         for habitacion in self.juego.laberinto.hijos:
-            print("num-punto",habitacion.num,habitacion.forma.punto.x,habitacion.forma.punto.y)
+            print("num-punto", habitacion.num, habitacion.forma.punto.x, habitacion.forma.punto.y)
         self.dibujarLaberinto()
-
         self.draw_person()
         self.draw_bichos()
 
@@ -39,120 +50,140 @@ class MazeGUI:
         self.normalizar()
         self.calcularTamContenedor()
         self.asignarPuntosReales()
-    
+
     def dibujarLaberinto(self):
         self.juego.laberinto.aceptar(self)
 
-    def visitarHabitacion(self, hab):
-        self.dibujarRectangulo(hab.forma)
-        self.canvas.create_text(hab.forma.punto.x, hab.forma.punto.y, text=str(hab.num), font=("Arial", 22))
+    def dibujarRectangulo(self, forma):
 
-    def visitarPared(self, pared):
-        pass
-    def visitarPuerta(self, puerta):
-        hab1 = puerta.lado1
-        hab2 = puerta.lado2
-        
-        x1 = hab1.forma.punto.x + hab1.forma.extent.x/2
-        y1 = hab1.forma.punto.y + hab1.forma.extent.y/2
-        x2 = hab2.forma.punto.x + hab2.forma.extent.x/2
-        y2 = hab2.forma.punto.y + hab2.forma.extent.y/2
+        self.master.after(0, lambda: self.visuales.update({
+            hash(forma): self.canvas.create_rectangle(
+                forma.punto.x, forma.punto.y, 
+                forma.punto.x + forma.extent.x, forma.punto.y + forma.extent.y, 
+                fill="lightgray"
+            )
+        }))
 
-        # Calcula el punto medio entre las dos habitaciones
-        x_medio = (x1 + x2) / 2
-        y_medio = (y1 + y2) / 2
-
-        # Determine the direction of the door based on room positions
-        if hab1.forma.punto.x != hab2.forma.punto.x:  # Vertical alignment
-            width = 10
-            height = 40
-        else:  # Horizontal alignment
-            width = 40
-            height = 10
-        
-        # Draw the door as a rectangle along the edge of the rooms
-        if isinstance(puerta.estadoPuerta, estado_puerta.Abierta):
-            color = "green"
-        else:
-            color = "red"
-        self.canvas.create_rectangle(x_medio - width / 2, y_medio - height / 2, x_medio + width / 2, y_medio + height / 2, fill=color)
-
-    def visitarPersonaje(self, personaje):
-        habitacion = personaje.posicion
-        x = habitacion.forma.punto.x + habitacion.forma.extent.x / 2 - 30
-        y = habitacion.forma.punto.y + habitacion.forma.extent.y / 2
-        self.canvas.create_oval(x - 10, y - 10, x + 10, y + 10, fill="blue")
-
-    def visitarBicho(self, bicho):
-        habitacion = bicho.posicion
-        x = habitacion.forma.punto.x + habitacion.forma.extent.x / 2
-        y = habitacion.forma.punto.y + habitacion.forma.extent.y / 2
-        self.canvas.create_oval(x - 10, y - 10, x + 10, y + 10, fill="red")
-
-    def visitarBomba(self, bomba):
-        pass
-    def visitarTunel(self, tunel):
-        pass
-
-    def dibujarRectangulo(self,forma):
-        self.canvas.create_rectangle(forma.punto.x, forma.punto.y, forma.punto.x+forma.extent.x, forma.punto.y+forma.extent.y, fill="lightgray")
-    
     def draw_person(self):
-        self.juego.personaje.aceptar(self)
+        
+        self.master.after(0, self.juego.personaje.aceptar, self)
+    def draw_bicho_muere(self, data):
+        self.master.after(0, lambda: self.canvas.delete(self.visuales[data]))
+    
+    def draw_caminar(self, ente):
+        if ente == None:
+            return
+        self.master.after(0, self._draw_caminar, ente)
+
+    def _draw_caminar(self, ente):
+        self.canvas.delete(self.visuales[hash(ente)])
+        ente.aceptar(self)
 
     def draw_bichos(self):
         for bicho in self.juego.bichos:
-           bicho.aceptar(self)
+            bicho.aceptar(self)
+
     def calcularPosicion(self):
         habitacion1 = self.juego.obtenerHabitacion(1)
         habitacion1.forma.punto = Point(0, 0)
         for habitacion in self.juego.laberinto.hijos:
             habitacion.calcularPosicion()
-    
+
+    def visitarHabitacion(self, hab):
+        self.dibujarRectangulo(hab.forma)
+        self.canvas.create_text(
+            hab.forma.punto.x, hab.forma.punto.y, 
+            text=str(hab.num), font=("Arial", 22)
+        )
+
+    def visitarPared(self, pared):
+        pass
+
+    def visitarPuerta(self, puerta):
+        hab1 = puerta.lado1
+        hab2 = puerta.lado2
+
+        x1 = hab1.forma.punto.x + hab1.forma.extent.x / 2
+        y1 = hab1.forma.punto.y + hab1.forma.extent.y / 2
+        x2 = hab2.forma.punto.x + hab2.forma.extent.x / 2
+        y2 = hab2.forma.punto.y + hab2.forma.extent.y / 2
+
+        x_medio = (x1 + x2) / 2
+        y_medio = (y1 + y2) / 2
+
+        if hab1.forma.punto.x != hab2.forma.punto.x:
+            width = 10
+            height = 40
+        else:
+            width = 40
+            height = 10
+
+        color = "green" if isinstance(puerta.estadoPuerta, estado_puerta.Abierta) else "red"
+        self.canvas.after(0, self.dibujarPuerta, puerta, x_medio, y_medio, width, height, color)
+
+    def dibujarPuerta(self, puerta, x_medio, y_medio, width, height, color):
+        self.visuales[hash(puerta)] = self.canvas.create_rectangle(
+            x_medio - width / 2, y_medio - height / 2, 
+            x_medio + width / 2, y_medio + height / 2, 
+            fill=color
+        )
+
+    def visitarBomba(self, bomba):
+        pass
+
+    def visitarTunel(self, tunel):        
+        pass
+
+    def visitarPersonaje(self, personaje):
+        personaje.agregarEvent_manager(self.event_manager)
+        habitacion = personaje.posicion
+        x = habitacion.forma.punto.x + habitacion.forma.extent.x / 2 - 30
+        y = habitacion.forma.punto.y + habitacion.forma.extent.y / 2
+        self.visuales[hash(personaje)] = self.canvas.create_oval(
+            x - 10, y - 10, x + 10, y + 10, fill="blue"
+        )
+
+    def visitarBicho(self, bicho):
+        habitacion = bicho.posicion
+        x = habitacion.forma.punto.x + habitacion.forma.extent.x / 2
+        y = habitacion.forma.punto.y + habitacion.forma.extent.y / 2
+
+        offset = bicho.posicion.entidades.index(bicho) * 25
+        color = "red"
+        self.canvas.after(0, lambda: self.visuales.update({
+            hash(bicho): self.canvas.create_oval(
+                x + offset - 10, y - 10, x + offset + 10, y + 10, fill=color
+            )
+        }))
+
     def normalizar(self):
-        min_x = 0
-        min_y = 0
+        min_x = min(hab.forma.punto.x for hab in self.juego.laberinto.hijos)
+        min_y = min(hab.forma.punto.y for hab in self.juego.laberinto.hijos)
 
-        # Buscar min_x y min_y
-        for each in self.juego.laberinto.hijos:
-            min_x = min(min_x, each.forma.punto.x)
-            min_y = min(min_y, each.forma.punto.y)
+        for hab in self.juego.laberinto.hijos:
+            hab.forma.punto.x += abs(min_x)
+            hab.forma.punto.y += abs(min_y)
 
-        # Ajustar puntos
-        for each in self.juego.laberinto.hijos:
-            un_punto = each.forma.punto
-            nuevo_x = un_punto.x + abs(min_x)
-            nuevo_y = un_punto.y + abs(min_y)
-            each.forma.punto = Point(nuevo_x, nuevo_y)  
     def calcularTamContenedor(self):
-        max_x = 0
-        max_y = 0
+        max_x = max(hab.forma.punto.x for hab in self.juego.laberinto.hijos)
+        max_y = max(hab.forma.punto.y for hab in self.juego.laberinto.hijos)
 
-        for each in self.juego.laberinto.hijos:
-            max_x = max(max_x, each.forma.punto.x)
-            max_y = max(max_y, each.forma.punto.y)
-
-        max_x += 1
-        max_y += 1
-
-        self.ancho = round(1050 / max_x)
-        self.alto = round(600 / max_y)
+        self.ancho = round(1050 / (max_x + 1))
+        self.alto = round(600 / (max_y + 1))
 
     def asignarPuntosReales(self):
         origen_x, origen_y = 70, 10
 
-        for each in self.juego.laberinto.hijos:
-            x = origen_x + (each.forma.punto.x * self.ancho)
-            y = origen_y + (each.forma.punto.y * self.alto)
-            
-            each.forma.punto = Point(x, y)  # Asumo que Punto(x, y) es una clase
-            each.forma.extent = Point(self.ancho, self.alto)
-
-            # Si quisieras incluir la recursión comentada:
-            # for hijo in each.hijos:
-            #     hijo.asignar_puntos_reales(each)
+        for hab in self.juego.laberinto.hijos:
+            hab.forma.punto.x = origen_x + (hab.forma.punto.x * self.ancho)
+            hab.forma.punto.y = origen_y + (hab.forma.punto.y * self.alto)
+            hab.forma.extent = Point(self.ancho, self.alto)
 
 if __name__ == '__main__':
     root = tk.Tk()
-    gui = MazeGUI(root, "./laberintos/lab4HabIzd4Bichos.json")  # Use a default laberinto file
+    gui = MazeGUI(root, "./laberintos/lab4HabIzd4Bichos.json")
     root.mainloop()
+
+
+
+

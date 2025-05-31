@@ -1,7 +1,9 @@
 class ElementoMapa:
+    _id_counter = 0
     def __init__(self):
         self.padre = None
-    
+        self.id = ElementoMapa._id_counter
+        ElementoMapa._id_counter += 1
     def recorrer(self, func):
         func(self)
 
@@ -22,3 +24,6 @@ class ElementoMapa:
         pass
     def __str__(self):
         return "Soy un ElementoMapa"
+
+    def __hash__(self):
+        return hash((self.__class__, self.id))

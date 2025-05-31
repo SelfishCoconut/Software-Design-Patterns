@@ -1,11 +1,18 @@
+from lock_singleton import get_global_lock
 class Modo:
     def __init__(self):
-        pass
+        self.lock = get_global_lock()
 
     def actuar(self, bicho):
         self.dormir(bicho)
-        self.caminar(bicho)
-        self.atacar(bicho)
+        with self.lock:
+            if bicho.estaVivo() == False:  
+                return
+            self.caminar(bicho)
+        with self.lock:
+            if bicho.estaVivo() == False:
+                return
+            self.atacar(bicho)
 
     def dormir(self, bicho):
         pass

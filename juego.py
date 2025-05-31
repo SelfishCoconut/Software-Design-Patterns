@@ -14,6 +14,7 @@ from pared import Pared
 from bomba import Bomba
 from pared_bomba import ParedBomba
 from ente import Personaje
+import threading
 
 class Juego:
     def __init__(self):
@@ -22,7 +23,7 @@ class Juego:
         self.prototipo = None
         self.personaje=None
         self.bicho_threads = {}
-
+        
     def clonarLaberinto(self):
         return copy.deepcopy(self.prototipo)
 
@@ -31,17 +32,27 @@ class Juego:
         self.bichos.append(bicho)
 
     def lanzarBicho(self, bicho):
-        import threading
         thread = threading.Thread(target=bicho.actua)
         if bicho not in self.bicho_threads:
-            self.bicho_threads[bicho] = []
-        self.bicho_threads[bicho].append(thread)
+            self.bicho_threads[hash(bicho)] = thread
+            thread.start()
+
+    def lanzarPersonaje(self):
+        thread = threading.Thread(target=self.personaje.actua)
+        self.personaje.thread = thread
         thread.start()
 
     def terminarBicho(self, bicho):
         if bicho in self.bicho_threads:
-            for thread in self.bicho_threads[bicho]:
-                bicho.vidas = 0
+            self.bicho_threads[hash(bicho)].join()
+        self.eliminarBicho(bicho)
+
+    def eliminarBicho(self, bicho):
+        if bicho in self.bichos:
+             self.bichos.remove(bicho)
+        for hab in self.laberinto.hijos:
+            if bicho in hab.entidades:
+                hab.salir(bicho)
 
     def lanzarBichos(self):
         for bicho in self.bichos:
@@ -59,9 +70,10 @@ class Juego:
         if bicho.posicion == self.personaje.posicion:
             print(f"El bicho {bicho} ataca al personaje {self.personaje}")
             self.personaje.esAtacadoPor(bicho)
-    
-    def buscarBicho(self):
+
+    def buscarBicho(self, bicho):
         pass
+                
     def abrir_puertas(self):
         def abrirPuertas(obj):
             if obj.esPuerta():

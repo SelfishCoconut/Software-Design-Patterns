@@ -28,7 +28,9 @@ class Puerta(ElementoMapa):
 
     def esPuerta(self):
         return True
-    
+    def esAbierta(self):
+        return self.estadoPuerta.esAbierta()
+
     def aceptar(self, unVisitor):
         unVisitor.visitarPuerta(self)
 
@@ -46,3 +48,7 @@ class Puerta(ElementoMapa):
     
     def __str__(self):
         return "Soy una puerta"
+
+    def __hash__(self):
+        return hash((self.lado1, self.lado2, self.visitada))
+
