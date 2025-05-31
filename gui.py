@@ -77,6 +77,7 @@ class MazeGUI:
     def _draw_caminar(self, ente):
         if self.visuales.get(hash(ente)):
             self.canvas.delete(self.visuales[hash(ente)])
+        if ente.posicion.visitado == True: 
             ente.aceptar(self)
 
     def draw_bichos(self):
