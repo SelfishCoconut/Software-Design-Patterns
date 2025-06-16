@@ -24,6 +24,10 @@ class Habitacion(Contenedor):
             hijo.aceptar(unVisitor)
         self.forma.aceptar(unVisitor)
 
+        if self.visitado:
+            for entidad in self.entidades:
+                entidad.aceptar(unVisitor)
+
     def salir(self, alguien):
         self.entidades.remove(alguien)
         alguien.posicion=None

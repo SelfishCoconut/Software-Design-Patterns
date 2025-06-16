@@ -5,7 +5,7 @@ from .ente import Ente
 class Bicho(Ente):
     def __init__(self):
         super().__init__()
-        self.modo = None
+        self.modo: Modo = None
         self.running = True
         self.poder = None
         self.vidas = None

@@ -109,7 +109,7 @@ class Personaje(Ente):
             puerta.entrar(self)
             self.event_manager.notify({'type': 'caminar', 'data': self})
         else:
-            self.logger.info("--No se puede mover en esa dirección")
+            self.logger.info("No se puede mover en esa dirección")
 
     def __str__(self):
         return self.nombre

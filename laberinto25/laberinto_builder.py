@@ -19,6 +19,7 @@ class LaberintoBuilder:
     def __init__(self):
         self.laberinto = None
         self.juego=None
+        #self.skin_factory = SkinFactory(asset_folder)
 
     def fabricarJuego(self):
         self.juego=Juego()
@@ -40,6 +41,7 @@ class LaberintoBuilder:
         for each in hab.forma.orientaciones:
             hab.ponerElementoEnOrientacion(self.fabricarPared(),each)
         self.laberinto.agregarHabitacion(hab)
+        #self.fabricar_skin(hab)
         return hab
 
     def fabricarPared(self):
@@ -108,4 +110,5 @@ class LaberintoBuilder:
             bicho=self.fabricarBichoPerezoso()
         hab=self.laberinto.obtenerHabitacion(posicion)
         hab.entrar(bicho)
+        #self.fabricar_skin(bicho)
         self.juego.agregar_bicho(bicho)
