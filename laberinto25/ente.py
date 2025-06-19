@@ -1,12 +1,14 @@
-from .estado_ente import Vivo, Muerto
-from .norte import Norte
-from .sur import Sur
-from .este import Este
-from .oeste import Oeste
-from .orientacion import Orientacion
+from estado_ente import Vivo, Muerto
+from norte import Norte
+from sur import Sur
+from este import Este
+from oeste import Oeste
+from orientacion import Orientacion
+from lock_singleton import get_global_lock
 import logging
 from threading import Lock
-from .lock_singleton import get_global_lock
+from pynput import keyboard
+
 class Ente:
     _id_counter = 0
     def __init__(self):
@@ -29,10 +31,11 @@ class Ente:
         return False
 
     def esAtacadoPor(self, atacante):
-        print(f"Ataque: {self}  es atacado")
+        print(f"Ataque: {self}  es atacado por {atacante}")
         self.vidas -= atacante.poder
         print(f"Vidas restantes: {self.vidas}")
         if self.vidas <= 0:
+            self.vidas = 0
             print("MUERTO EN: ", self.posicion.num)
             self.estadoEnte.morir(self)
 
@@ -55,9 +58,9 @@ class Personaje(Ente):
     def __init__(self, vidas, poder, juego, nombre):
         super().__init__()
         self.nombre = nombre
-        self.vidas = vidas * 100
+        self.vidas = 100
         self.juego = juego
-        self.poder = poder
+        self.poder = poder * 10
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger("personaje")
         self.lock = get_global_lock()
@@ -77,23 +80,7 @@ class Personaje(Ente):
     def aceptar(self, unVisitor):
         unVisitor.visitarPersonaje(self)
     
-    def actua(self):
-        from pynput import keyboard
-        move_key = ['w', 'a', 's', 'd', 'W', 'A', 'S', 'D', keyboard.Key.up, keyboard.Key.down, keyboard.Key.left, keyboard.Key.right]
-        attack_key = [keyboard.Key.space]
-        def on_press(key):
-            if key in move_key:
-                print(f"Tecla presionada: {key}")
-                self.movimiento(key)
-            elif key in attack_key:
-                with self.lock:
-                    self.atacar()
-                    
-        with keyboard.Listener(on_press=on_press) as listener:
-            while self.estaVivo():
-                listener.join()
-
-    def movimiento(self, key):
+    def _handle_movement(self, key):
         from pynput import keyboard
         if key == keyboard.Key.up:
             puerta = self.posicion.obtenerElementoEnOrientacion(Norte())
@@ -105,11 +92,37 @@ class Personaje(Ente):
             puerta = self.posicion.obtenerElementoEnOrientacion(Este())
         else:
             return
+
         if puerta.esPuerta() and puerta.esAbierta() and not self.posicion.buscarEnemigo(self):
             puerta.entrar(self)
             self.event_manager.notify({'type': 'caminar', 'data': self})
         else:
             self.logger.info("No se puede mover en esa dirección")
+
+
+    def _handle_attack(self):
+        with self.lock:
+            self.atacar()
+
+    def _on_press(self, key):
+        move_key = ['w', 'a', 's', 'd', 'W', 'A', 'S', 'D', keyboard.Key.up, keyboard.Key.down, keyboard.Key.left, keyboard.Key.right]
+        attack_key = [keyboard.Key.space]
+
+        if key in move_key:
+            self._handle_movement(key)
+        elif key in attack_key:
+            self._handle_attack()
+
+
+    def actua(self):
+        listener = keyboard.Listener(on_press=self._on_press)
+        listener.start()  # Start the listener in a non-blocking way
+
+        while self.estaVivo() and self.juego.fase.running:
+            pass # Keep the thread alive while the character is alive.  The listener handles input.
+        
+        listener.stop() # Stop listening when the character dies.
+
 
     def __str__(self):
         return self.nombre

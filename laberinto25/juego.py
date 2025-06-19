@@ -1,19 +1,20 @@
 import copy
-from .laberinto import Laberinto
-from .bicho import Bicho
-from .habitacion import Habitacion
-from .puerta import Puerta
-from .norte import Norte
-from .sur import Sur
-from .este import Este
-from .oeste import Oeste
-from .orientacion import Orientacion
-from .agresivo import Agresivo
-from .perezoso import Perezoso
-from .pared import Pared
-from .bomba import Bomba
-from .pared_bomba import ParedBomba
-from .ente import Personaje
+from laberinto import Laberinto
+from bicho import Bicho
+from habitacion import Habitacion
+from puerta import Puerta
+from norte import Norte
+from sur import Sur
+from este import Este
+from oeste import Oeste
+from orientacion import Orientacion
+from agresivo import Agresivo
+from perezoso import Perezoso
+from pared import Pared
+from bomba import Bomba
+from pared_bomba import ParedBomba
+from ente import Personaje
+from faseJuego import *
 import threading
 
 class Juego:
@@ -23,9 +24,12 @@ class Juego:
         self.prototipo = None
         self.personaje=None
         self.bicho_threads = {}
-        
+        self.fase: FaseJuego = FaseInicial()
+    
     def clonarLaberinto(self):
         return copy.deepcopy(self.prototipo)
+
+    
 
     def agregar_bicho(self, bicho):
         bicho.juego = self
@@ -33,7 +37,7 @@ class Juego:
 
     def lanzarBicho(self, bicho):
         thread = threading.Thread(target=bicho.actua)
-        if bicho not in self.bicho_threads:
+        if hash(bicho) not in self.bicho_threads:
             self.bicho_threads[hash(bicho)] = thread
             thread.start()
 
@@ -43,9 +47,10 @@ class Juego:
         thread.start()
 
     def terminarBicho(self, bicho):
-        if bicho in self.bicho_threads:
-            self.bicho_threads[hash(bicho)].join()
-        self.eliminarBicho(bicho)
+        if hash(bicho) in self.bicho_threads:
+            #self.bicho_threads[hash(bicho)].join()
+            self.eliminarBicho(bicho)
+            
 
     def eliminarBicho(self, bicho):
         if bicho in self.bichos:
@@ -87,10 +92,6 @@ class Juego:
                 print(f"Cerrando puerta", obj)
                 obj.cerrar()
         self.laberinto.recorrer(cerrarPuertas)
-
-    def iniciar_juego(self):
-        # Lógica para iniciar el juego
-        pass
 
     def crearLaberinto2HabFM(self, creator):
         laberinto = creator.crear_laberinto()
@@ -170,5 +171,5 @@ class Juego:
 
         return laberinto
 
-    def terminarJuego(self):
-        self.terminarBichos()
+    def terminarJuego(self, ui):
+        self.fase.finalizar(self, ui)

@@ -16,10 +16,10 @@ class Vivo(EstadoEnte):
         print("El ente ya está vivo")
 
     def morir(self, ente):
-        print("El ente muere")
-        ente.event_manager.notify({'type': 'bicho_muere', 'data': hash(ente)})
+        print("AAAAGHH...")
         ente.estadoEnte = Muerto()
         ente.juego.terminarBicho(ente)
+        ente.event_manager.notify({'type': 'bicho_muere', 'data': ente})
 
 class Muerto(EstadoEnte):
     def __init__(self):
@@ -31,4 +31,3 @@ class Muerto(EstadoEnte):
 
     def morir(self, ente):
         print("El ente ya está muerto")
-        ente.juego.terminarJuego()

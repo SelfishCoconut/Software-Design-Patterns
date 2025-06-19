@@ -1,5 +1,5 @@
-from .elemento_mapa import ElementoMapa
-from .estado_puerta import Cerrada
+from elemento_mapa import ElementoMapa
+from estado_puerta import Cerrada
 
 class Puerta(ElementoMapa):
     def __init__(self, lado1, lado2):

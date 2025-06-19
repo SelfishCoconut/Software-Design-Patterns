@@ -1,13 +1,17 @@
 import tkinter as tk
-from .director import Director
-from .point import Point
-import laberinto25.estado_puerta as estado_puerta
-import laberinto25.maze_gui_visitor as vs
-import laberinto25.event_manager as em
+from director import Director
+from point import Point
+from visitor import Visitor
+from userInterface import UserInterface
+import   estado_puerta as estado_puerta
+import UI_visitor as vs
+import event_manager as em
 import threading
+import tkinter as tk
 
-class MazeGUI:
+class GUI(UserInterface):
     def __init__(self, master, laberinto_file):
+        super().__init__()
         self.master = master
         self.laberinto_file = laberinto_file
         self.juego = None
@@ -17,6 +21,7 @@ class MazeGUI:
         self.visuales = {}
         self.event_manager = None
         self.event_listener = None        
+        self.visitor = vs.MazeUIVisitor(self)
         self.load_laberinto()
         self.init_ui()
 
@@ -24,10 +29,7 @@ class MazeGUI:
         director = Director()
         director.procesar(self.laberinto_file)
         self.juego = director.obtenerJuego()
-        self.juego.agregar_personaje("Pepe")
-        self.juego.abrir_puertas()
-        self.master.after(0, self.juego.lanzarPersonaje)
-        self.master.after(0, self.juego.lanzarBichos)
+        self.juego.fase.iniciar(self.juego)
     
     def init_ui(self):
         self.master.title("Maze Game")
@@ -38,12 +40,11 @@ class MazeGUI:
         self.event_listener = em.EventListener(self)
         self.event_manager.add_listener(self.event_listener)
         [bicho.agregarEvent_manager(self.event_manager) for bicho in self.juego.bichos]
+        self.juego.personaje.agregarEvent_manager(self.event_manager)
         self.calcularLaberinto()
         for habitacion in self.juego.laberinto.hijos:
             print("num-punto", habitacion.num, habitacion.forma.punto.x, habitacion.forma.punto.y)
         self.dibujarLaberinto()
-        #self.draw_person()
-        #self.draw_bichos()
 
     def calcularLaberinto(self):
         self.calcularPosicion()
@@ -51,8 +52,24 @@ class MazeGUI:
         self.calcularTamContenedor()
         self.asignarPuntosReales()
 
+    def derrota(self):
+        self.master.after(0, lambda: (
+            self.juego.terminarBichos(),
+            self.canvas.delete("all"),
+            self.canvas.create_rectangle(0, 0, 1150, 900, fill="red"),
+            self.canvas.create_text(575, 450, text="DERROTA", font=("Arial", 40), fill="white")
+        ))
+    def victoria(self):
+        self.master.after(0, lambda: (
+            self.juego.terminarBichos(),
+            self.canvas.delete("all"),
+            self.canvas.create_rectangle(0, 0, 1150, 900, fill="green"),
+            self.canvas.create_text(575, 450, text="VICTORIA", font=("Arial", 40), fill="white")
+        ))
+
+
     def dibujarLaberinto(self):
-        self.juego.laberinto.aceptar(self)
+        self.juego.laberinto.aceptar(self.visitor)
 
     def dibujarRectangulo(self, forma):
 
@@ -68,9 +85,9 @@ class MazeGUI:
     def draw_person(self):
         
         self.master.after(0, self.juego.personaje.aceptar, self)
-    def draw_bicho_muere(self, data):
-        if data in self.visuales:
-            self.master.after(0, lambda: self.canvas.delete(self.visuales[data]))
+    def draw_bicho_muere(self, ente):
+        if self.visuales.get(hash(ente)):
+            self.master.after(0, lambda: self.canvas.delete(self.visuales[hash(ente)]))
     
     def draw_caminar(self, ente):
         self.master.after(0, self._draw_caminar, ente)
@@ -79,12 +96,12 @@ class MazeGUI:
         if self.visuales.get(hash(ente)):
             self.canvas.delete(self.visuales[hash(ente)])
         if ente.posicion.visitado == True: 
-            ente.aceptar(self)
+            ente.aceptar(self.visitor)
 
     def draw_bichos(self):
         for bicho in self.juego.bichos:
             if bicho.posicion.visitado == True:
-                bicho.aceptar(self)
+                bicho.aceptar(self.visitor)
 
     def calcularPosicion(self):
         habitacion1 = self.juego.obtenerHabitacion(1)
@@ -92,15 +109,13 @@ class MazeGUI:
         for habitacion in self.juego.laberinto.hijos:
             habitacion.calcularPosicion()
 
-    def visitarHabitacion(self, hab):
+    def dibujarHabitacion(self, hab):
         if hash(hab.forma) in self.visuales:
             return
         self.dibujarRectangulo(hab.forma)
 
-    def visitarPared(self, pared):
-        pass
 
-    def visitarPuerta(self, puerta):
+    def dibujarPuerta(self, puerta):
         hab1 = puerta.lado1
         hab2 = puerta.lado2
 
@@ -120,33 +135,29 @@ class MazeGUI:
             height = 10
 
         color = "green" if isinstance(puerta.estadoPuerta, estado_puerta.Abierta) else "red"
-        self.canvas.after(0, self.dibujarPuerta, puerta, x_medio, y_medio, width, height, color)
+        self.canvas.after(0, self._dibujarPuerta, puerta, x_medio, y_medio, width, height, color)
 
-    def dibujarPuerta(self, puerta, x_medio, y_medio, width, height, color):
+    def _dibujarPuerta(self, puerta, x_medio, y_medio, width, height, color):
         self.visuales[hash(puerta)] = self.canvas.create_rectangle(
             x_medio - width / 2, y_medio - height / 2, 
             x_medio + width / 2, y_medio + height / 2, 
             fill=color
         )
 
-    def visitarBomba(self, bomba):
-        pass
 
-    def visitarTunel(self, tunel):        
-        pass
-
-    def visitarPersonaje(self, personaje):
+    def dibujarPersonaje(self, personaje):
         if hash(personaje) in self.visuales:
             self.master.after(0, lambda: self.canvas.delete(self.visuales[hash(personaje)]))
-        personaje.agregarEvent_manager(self.event_manager)
         habitacion = personaje.posicion
         x = habitacion.forma.punto.x + habitacion.forma.extent.x / 2 - 30
         y = habitacion.forma.punto.y + habitacion.forma.extent.y / 2
-        self.visuales[hash(personaje)] = self.canvas.create_oval(
-            x - 10, y - 10, x + 10, y + 10, fill="blue"
-        )
+        self.master.after(0, lambda: self.visuales.update({
+            hash(personaje): self.canvas.create_oval(
+                x - 10, y - 10, x + 10, y + 10, fill="blue"
+            )
+        }))
 
-    def visitarBicho(self, bicho):
+    def dibujarBicho(self, bicho):
         if hash(bicho) in self.visuales:
             self.master.after(0, lambda: self.canvas.delete(self.visuales[hash(bicho)]))
         habitacion = bicho.posicion

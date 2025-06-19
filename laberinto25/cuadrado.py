@@ -1,4 +1,4 @@
-from .forma import Forma
+from forma import Forma
 
 class Cuadrado(Forma):
     def __init__(self):

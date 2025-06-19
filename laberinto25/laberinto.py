@@ -1,4 +1,4 @@
-from .contenedor import Contenedor
+from contenedor import Contenedor
 
 class Laberinto(Contenedor):
     def __init__(self):

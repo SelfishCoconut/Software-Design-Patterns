@@ -1,5 +1,5 @@
 import time
-from .modo import Modo
+from modo import Modo
 
 class Agresivo(Modo):
     def __init__(self):

@@ -1,5 +1,5 @@
 import json
-from .laberinto_builder import LaberintoBuilder
+from laberinto_builder import LaberintoBuilder
 
 
 class Director:

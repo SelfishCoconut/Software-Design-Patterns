@@ -1,5 +1,5 @@
-from .orientacion import Orientacion
-from .point import Point
+from orientacion import Orientacion
+from point import Point
 
 class Este(Orientacion):
     _instance = None

@@ -1,4 +1,4 @@
-from .contenedor import Contenedor
+from contenedor import Contenedor
 
 class Habitacion(Contenedor):
     def __init__(self, num):

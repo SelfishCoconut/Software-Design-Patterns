@@ -1,4 +1,4 @@
-from .lock_singleton import get_global_lock
+from lock_singleton import get_global_lock
 class Modo:
     def __init__(self):
         self.lock = get_global_lock()
@@ -6,13 +6,11 @@ class Modo:
     def actuar(self, bicho):
         self.dormir(bicho)
         with self.lock:
-            if bicho.estaVivo() == False:  
-                return
-            self.caminar(bicho)
+            if bicho.estaVivo() and bicho.juego.fase.running:  
+                self.caminar(bicho)
         with self.lock:
-            if bicho.estaVivo() == False:
-                return
-            self.atacar(bicho)
+            if bicho.estaVivo() and bicho.juego.fase.running:
+                self.atacar(bicho)
 
     def dormir(self, bicho):
         pass

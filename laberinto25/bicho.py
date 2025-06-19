@@ -1,6 +1,6 @@
-from .modo import Modo
-from .agresivo import Agresivo
-from .ente import Ente
+from modo import Modo
+from agresivo import Agresivo
+from ente import Ente
 
 class Bicho(Ente):
     def __init__(self):
@@ -12,9 +12,9 @@ class Bicho(Ente):
         self.posicion = None
 
     def actua(self):
-        while self.estaVivo():
+        while self.estaVivo() and self.juego.fase.running:
             self.modo.actuar(self)
-
+        print(f"--------------{self.id} ha terminado de actuar--------------")
     def iniAgresivo(self):
         self.modo = Agresivo()
         self.poder = 10

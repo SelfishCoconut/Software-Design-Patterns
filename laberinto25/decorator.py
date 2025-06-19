@@ -1,4 +1,4 @@
-from .hoja import Hoja
+from hoja import Hoja
 
 class Decorator(Hoja):
     def __init__(self, em):

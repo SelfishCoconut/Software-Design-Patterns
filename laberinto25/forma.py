@@ -1,5 +1,5 @@
 import random
-from .point import Point
+from point import Point
 class Forma:
     def __init__(self):
         self.orientaciones = []

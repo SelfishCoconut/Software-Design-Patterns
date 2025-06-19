@@ -1,19 +1,20 @@
 import copy
-from .laberinto import Laberinto
-from .habitacion import Habitacion
-from .puerta import Puerta
-from .norte import Norte
-from .sur import Sur
-from .este import Este
-from .oeste import Oeste 
-from .habitacion import Habitacion
-from .pared import Pared 
-from .bicho import Bicho
-from .agresivo import Agresivo
-from .perezoso import Perezoso
-from .cuadrado import Cuadrado
-from .juego import Juego
-from .tunel import Tunel
+from laberinto import Laberinto
+from habitacion import Habitacion
+from puerta import Puerta
+from norte import Norte
+from sur import Sur
+from este import Este
+from oeste import Oeste 
+from habitacion import Habitacion
+from pared import Pared 
+from bicho import Bicho
+from agresivo import Agresivo
+from perezoso import Perezoso
+from cuadrado import Cuadrado
+from juego import Juego
+from tunel import Tunel
+from faseJuego import *
 
 class LaberintoBuilder:
     def __init__(self):
@@ -25,6 +26,7 @@ class LaberintoBuilder:
         self.juego=Juego()
         self.juego.prototipo = copy.deepcopy(self.laberinto)
         self.juego.laberinto = self.laberinto
+        self.juego.fase = FaseInicial()
 #        self.juego.laberinto = copy.deepcopy(self.juego.prototipo)
 
     def fabricarLaberinto(self):
