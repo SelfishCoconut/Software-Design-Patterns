@@ -1,20 +1,20 @@
 import copy
-from laberinto import Laberinto
-from habitacion import Habitacion
-from puerta import Puerta
-from norte import Norte
-from sur import Sur
-from este import Este
-from oeste import Oeste 
-from habitacion import Habitacion
-from pared import Pared 
-from bicho import Bicho
-from agresivo import Agresivo
-from perezoso import Perezoso
-from cuadrado import Cuadrado
-from juego import Juego
-from tunel import Tunel
-from faseJuego import *
+from laberinto25.laberinto import Laberinto
+from laberinto25.habitacion import Habitacion
+from laberinto25.puerta import Puerta
+from laberinto25.norte import Norte
+from laberinto25.sur import Sur
+from laberinto25.este import Este
+from laberinto25.oeste import Oeste 
+from laberinto25.habitacion import Habitacion
+from laberinto25.pared import Pared 
+from laberinto25.bicho import Bicho
+from laberinto25.agresivo import Agresivo
+from laberinto25.perezoso import Perezoso
+from laberinto25.cuadrado import Cuadrado
+from laberinto25.juego import Juego
+from laberinto25.tunel import Tunel
+from laberinto25.faseJuego import *
 
 class LaberintoBuilder:
     def __init__(self):

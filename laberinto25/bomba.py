@@ -1,4 +1,4 @@
-from decorator import Decorator
+from laberinto25.decorator import Decorator
 
 class Bomba(Decorator):
     def __init__(self, em):

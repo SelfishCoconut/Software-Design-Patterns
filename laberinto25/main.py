@@ -1,7 +1,7 @@
-from creator import Creator, CreatorB
-from juego import Juego
-from este import Este
-from oeste import Oeste
+from laberinto25.creator import Creator, CreatorB
+from laberinto25.juego import Juego
+from laberinto25.este import Este
+from laberinto25.oeste import Oeste
 import time
 
 #ejemplo de uso

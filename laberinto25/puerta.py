@@ -1,5 +1,5 @@
-from elemento_mapa import ElementoMapa
-from estado_puerta import Cerrada
+from laberinto25.elemento_mapa import ElementoMapa
+from laberinto25.estado_puerta import Cerrada
 
 class Puerta(ElementoMapa):
     def __init__(self, lado1, lado2):
@@ -12,18 +12,15 @@ class Puerta(ElementoMapa):
         self.estadoPuerta.entrar(self, alguien)
 
     def puedeEntrar(self, alguien):
-        print("Entrando en una puerta")
         if alguien.posicion == self.lado1:
             self.lado2.entrar(alguien)
         else:
             self.lado1.entrar(alguien)
 
     def abrir(self):
-        print("Abriendo puerta")
         self.estadoPuerta.abrir(self)
 
     def cerrar(self):
-        print("Cerrando puerta")
         self.estadoPuerta.cerrar(self)
 
     def esPuerta(self):
@@ -35,7 +32,6 @@ class Puerta(ElementoMapa):
         unVisitor.visitarPuerta(self)
 
     def calcularPosicionDesdeEn(self,forma, punto):
-        print("punto: ", punto.x, punto.y)
         if self.visitada:
             return
         self.visitada = True

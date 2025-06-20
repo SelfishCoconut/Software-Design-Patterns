@@ -1,20 +1,20 @@
 import copy
-from laberinto import Laberinto
-from bicho import Bicho
-from habitacion import Habitacion
-from puerta import Puerta
-from norte import Norte
-from sur import Sur
-from este import Este
-from oeste import Oeste
-from orientacion import Orientacion
-from agresivo import Agresivo
-from perezoso import Perezoso
-from pared import Pared
-from bomba import Bomba
-from pared_bomba import ParedBomba
-from ente import Personaje
-from faseJuego import *
+from laberinto25.laberinto import Laberinto
+from laberinto25.bicho import Bicho
+from laberinto25.habitacion import Habitacion
+from laberinto25.puerta import Puerta
+from laberinto25.norte import Norte
+from laberinto25.sur import Sur
+from laberinto25.este import Este
+from laberinto25.oeste import Oeste
+from laberinto25.orientacion import Orientacion
+from laberinto25.agresivo import Agresivo
+from laberinto25.perezoso import Perezoso
+from laberinto25.pared import Pared
+from laberinto25.bomba import Bomba
+from laberinto25.pared_bomba import ParedBomba
+from laberinto25.ente import Personaje
+from laberinto25.faseJuego import *
 import threading
 
 class Juego:
@@ -48,7 +48,6 @@ class Juego:
 
     def terminarBicho(self, bicho):
         if hash(bicho) in self.bicho_threads:
-            #self.bicho_threads[hash(bicho)].join()
             self.eliminarBicho(bicho)
             
 
@@ -73,7 +72,6 @@ class Juego:
 
     def buscarPersonaje(self,bicho):
         if bicho.posicion == self.personaje.posicion:
-            print(f"El bicho {bicho} ataca al personaje {self.personaje}")
             self.personaje.esAtacadoPor(bicho)
 
     def buscarBicho(self, bicho):
@@ -82,14 +80,12 @@ class Juego:
     def abrir_puertas(self):
         def abrirPuertas(obj):
             if obj.esPuerta():
-                print(f"Abriendo puerta", obj)
                 obj.abrir()
         self.laberinto.recorrer(abrirPuertas)
 
     def cerrar_puertas(self):
         def cerrarPuertas(obj):
             if obj.esPuerta():
-                print(f"Cerrando puerta", obj)
                 obj.cerrar()
         self.laberinto.recorrer(cerrarPuertas)
 

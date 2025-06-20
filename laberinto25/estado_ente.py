@@ -13,10 +13,9 @@ class Vivo(EstadoEnte):
         super().__init__()
 
     def vivir(self, ente):
-        print("El ente ya está vivo")
+        pass
 
     def morir(self, ente):
-        print("AAAAGHH...")
         ente.estadoEnte = Muerto()
         ente.juego.terminarBicho(ente)
         ente.event_manager.notify({'type': 'bicho_muere', 'data': ente})
@@ -26,8 +25,7 @@ class Muerto(EstadoEnte):
         super().__init__()
 
     def vivir(self, ente):
-        print("El ente revive")
         ente.estadoEnte = Vivo()
 
     def morir(self, ente):
-        print("El ente ya está muerto")
+        pass

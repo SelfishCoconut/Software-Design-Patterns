@@ -19,10 +19,8 @@ class Abierta(EstadoPuerta):
         super().__init__()
 
     def abrir(self, puerta):
-        print("La puerta ya está abierta")
-
+        pass
     def cerrar(self, puerta):
-        print("Cerrando la puerta")
         puerta.estadoPuerta = Cerrada()
 
     def entrar(self, puerta, alguien):
@@ -36,12 +34,10 @@ class Cerrada(EstadoPuerta):
         super().__init__()
 
     def abrir(self, puerta):
-        print("Abriendo la puerta")
         puerta.estadoPuerta = Abierta()
 
     def cerrar(self, puerta):
-        print("La puerta ya está cerrada")
-
+        pass
     def entrar(self, puerta, alguien):
         pass
 

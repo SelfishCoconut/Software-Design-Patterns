@@ -1,4 +1,4 @@
-from pared import Pared
+from laberinto25.pared import Pared
 
 class ParedBomba(Pared):
     def __init__(self):

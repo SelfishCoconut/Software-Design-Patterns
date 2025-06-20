@@ -1,4 +1,4 @@
-from visitor import Visitor
+from laberinto25.visitor import Visitor
 
 class MazeUIVisitor(Visitor):
     def __init__(self, ui):

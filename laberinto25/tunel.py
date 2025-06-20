@@ -1,4 +1,4 @@
-from hoja import Hoja
+from laberinto25.hoja import Hoja
 
 class Tunel(Hoja):
     def __init__(self, laberinto):

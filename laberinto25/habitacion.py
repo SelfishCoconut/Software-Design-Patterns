@@ -1,4 +1,4 @@
-from contenedor import Contenedor
+from laberinto25.contenedor import Contenedor
 
 class Habitacion(Contenedor):
     def __init__(self, num):
@@ -8,7 +8,6 @@ class Habitacion(Contenedor):
         self.visitado = False
 
     def entrar(self, alguien):
-        print(f"Entrando en la habitación {self.num}")
         if alguien.posicion is not None: 
             alguien.posicion.salir(alguien)
         alguien.posicion=self

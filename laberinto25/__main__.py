@@ -1,33 +1,27 @@
-from juego import Juego
+from laberinto25.juego import Juego
+from laberinto25.GUI import GUI
+from laberinto25.TUI import TUI
 import tkinter as tk
 import os
-from GUI import GUI
 import sys
 
-def mainTerminal():
-    
-    gui = GUI()
-    juego = Juego()
-    juego.fase.ui = TUI()
-    juego.fase.iniciar(juego)
+def mainTerminal(file_path):
+    TUI(file_path)
 
-def mainGUI():
+
+def mainGUI(file_path):
 
     root = tk.Tk()
-    file_path = os.path.join(os.path.dirname(__file__), 'laberintos', 'lab4HabIzd4Bichos.json')
-
     gui = GUI(root, file_path)
     root.mainloop()
 
 import cProfile
 if __name__ == "__main__":
-    if len(sys.argv) > 1 and sys.argv[1] == "terminal":
-        mainTerminal()
+    file_path = os.path.join(os.path.dirname(__file__), 'laberintos', 'lab4HabIzd4Bichos.json')
+    
+    if len(sys.argv) > 1:
+        mainTerminal(file_path)
     else:
-        #profiler = cProfile.Profile()
-        #profiler.enable()
-        mainGUI()
-        #profiler.disable()
-        #profiler.dump_stats('profiling_data.prof')
+        mainGUI(file_path)
 
 

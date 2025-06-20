@@ -1,6 +1,6 @@
-from modo import Modo
-from agresivo import Agresivo
-from ente import Ente
+from laberinto25.modo import Modo
+from laberinto25.agresivo import Agresivo
+from laberinto25.ente import Ente
 
 class Bicho(Ente):
     def __init__(self):

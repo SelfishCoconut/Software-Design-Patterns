@@ -1,10 +1,10 @@
-from estado_ente import Vivo, Muerto
-from norte import Norte
-from sur import Sur
-from este import Este
-from oeste import Oeste
-from orientacion import Orientacion
-from lock_singleton import get_global_lock
+from laberinto25.estado_ente import Vivo, Muerto
+from laberinto25.norte import Norte
+from laberinto25.sur import Sur
+from laberinto25.este import Este
+from laberinto25.oeste import Oeste
+from laberinto25.orientacion import Orientacion
+from laberinto25.lock_singleton import get_global_lock
 import logging
 from threading import Lock
 from pynput import keyboard
@@ -31,12 +31,9 @@ class Ente:
         return False
 
     def esAtacadoPor(self, atacante):
-        print(f"Ataque: {self}  es atacado por {atacante}")
         self.vidas -= atacante.poder
-        print(f"Vidas restantes: {self.vidas}")
         if self.vidas <= 0:
             self.vidas = 0
-            print("MUERTO EN: ", self.posicion.num)
             self.estadoEnte.morir(self)
 
     def esPersonaje(self):

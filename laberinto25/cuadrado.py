@@ -1,4 +1,4 @@
-from forma import Forma
+from laberinto25.forma import Forma
 
 class Cuadrado(Forma):
     def __init__(self):

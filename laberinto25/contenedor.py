@@ -1,4 +1,4 @@
-from elemento_mapa import ElementoMapa
+from laberinto25.elemento_mapa import ElementoMapa
 
 class Contenedor(ElementoMapa):
     def __init__(self):

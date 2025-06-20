@@ -1,4 +1,4 @@
-from lock_singleton import get_global_lock
+from laberinto25.lock_singleton import get_global_lock
 class Modo:
     def __init__(self):
         self.lock = get_global_lock()

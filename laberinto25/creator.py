@@ -1,10 +1,10 @@
-from juego import Habitacion, Laberinto, Pared, Puerta, ParedBomba, Bomba, Bicho, Agresivo, Perezoso
-from norte import Norte
-from sur import Sur
-from este import Este
-from oeste import Oeste
-from orientacion import Orientacion
-from cuadrado import Cuadrado
+from laberinto25.juego import Habitacion, Laberinto, Pared, Puerta, ParedBomba, Bomba, Bicho, Agresivo, Perezoso
+from laberinto25.norte import Norte
+from laberinto25.sur import Sur
+from laberinto25.este import Este
+from laberinto25.oeste import Oeste
+from laberinto25.orientacion import Orientacion
+from laberinto25.cuadrado import Cuadrado
 class Creator:
     def crear_habitacion(self, num):
         habitacion = Habitacion(num)

@@ -1,5 +1,5 @@
 import random
-from point import Point
+from laberinto25.point import Point
 class Forma:
     def __init__(self):
         self.orientaciones = []
@@ -27,7 +27,6 @@ class Forma:
             orientacion.calcularPosicionDesde(self)
     def caminarAleatorio(self, bicho):
         orientacion=self.obtenerOrientacionAleatoria()
-        print(f"Orientacion aleatoria: {orientacion}")
         orientacion.caminarAleatorio(bicho, self)
 
     def obtenerOrientacionAleatoria(self):

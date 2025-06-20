@@ -17,7 +17,6 @@ class FaseJugando(FaseJuego):
         pass
 
     def finalizar(self, juego, ui):
-        print("Finalizando el juego...")
         juego.fase = FaseFinal()
         juego.fase.finalizar(juego, ui)
 
@@ -47,12 +46,9 @@ class FaseFinal(FaseJuego):
         pass
     
     def finalizar(self, juego, ui):
-        print("Juego terminado!")
 
         if juego.personaje.vidas > 0:
-            print("Victoria!")
             ui.victoria()
 
         else:
-            print("Derrota!")
             ui.derrota()

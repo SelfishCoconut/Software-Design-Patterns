@@ -1,11 +1,10 @@
-from contenedor import Contenedor
+from laberinto25.contenedor import Contenedor
 
 class Laberinto(Contenedor):
     def __init__(self):
         super().__init__()        
 
     def entrar(self,alguien):
-        print("Entrando en el laberinto")
         hab1=self.obtenerHabitacion(1)
         hab1.entrar(alguien)
 
@@ -32,7 +31,5 @@ class Laberinto(Contenedor):
         print(f"{alguien} entra en el laberinto")
     
     def aceptar(self, unVisitor):
-        #unVisitor.visitarContenedor(self)
         for hijo in self.hijos:
             hijo.aceptar(unVisitor)
-        #self.forma.aceptar(unVisitor)

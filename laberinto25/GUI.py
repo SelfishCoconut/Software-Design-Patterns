@@ -1,49 +1,30 @@
 import tkinter as tk
-from director import Director
-from point import Point
-from visitor import Visitor
-from userInterface import UserInterface
-import   estado_puerta as estado_puerta
-import UI_visitor as vs
-import event_manager as em
+from laberinto25.director import Director
+from laberinto25.point import Point
+from laberinto25.visitor import Visitor
+from laberinto25.userInterface import UserInterface
+import laberinto25.estado_puerta as estado_puerta
+import laberinto25.UI_visitor as vs
+import laberinto25.event_manager as em
 import threading
 import tkinter as tk
 
 class GUI(UserInterface):
     def __init__(self, master, laberinto_file):
-        super().__init__()
+        super().__init__(laberinto_file)
         self.master = master
-        self.laberinto_file = laberinto_file
-        self.juego = None
         self.canvas = None
         self.ancho = 0
         self.alto = 0
         self.visuales = {}
-        self.event_manager = None
-        self.event_listener = None        
-        self.visitor = vs.MazeUIVisitor(self)
-        self.load_laberinto()
         self.init_ui()
 
-    def load_laberinto(self):
-        director = Director()
-        director.procesar(self.laberinto_file)
-        self.juego = director.obtenerJuego()
-        self.juego.fase.iniciar(self.juego)
     
     def init_ui(self):
         self.master.title("Maze Game")
         self.canvas = tk.Canvas(self.master, width=1150, height=900, bg="white")
         self.canvas.pack()
-
-        self.event_manager = em.EventManager()
-        self.event_listener = em.EventListener(self)
-        self.event_manager.add_listener(self.event_listener)
-        [bicho.agregarEvent_manager(self.event_manager) for bicho in self.juego.bichos]
-        self.juego.personaje.agregarEvent_manager(self.event_manager)
         self.calcularLaberinto()
-        for habitacion in self.juego.laberinto.hijos:
-            print("num-punto", habitacion.num, habitacion.forma.punto.x, habitacion.forma.punto.y)
         self.dibujarLaberinto()
 
     def calcularLaberinto(self):

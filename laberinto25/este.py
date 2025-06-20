@@ -1,5 +1,5 @@
-from orientacion import Orientacion
-from point import Point
+from laberinto25.orientacion import Orientacion
+from laberinto25.point import Point
 
 class Este(Orientacion):
     _instance = None
