@@ -11,6 +11,7 @@ from laberinto25.pared import Pared
 from laberinto25.bicho import Bicho
 from laberinto25.agresivo import Agresivo
 from laberinto25.perezoso import Perezoso
+from laberinto25.enjambre import Enjambre
 from laberinto25.cuadrado import Cuadrado
 from laberinto25.juego import Juego
 from laberinto25.tunel import Tunel
@@ -97,6 +98,14 @@ class LaberintoBuilder:
         bicho.modo=Perezoso()
         bicho.iniPerezoso()
         return bicho
+    
+    def fabricarBichoEnjambre(self):
+        bicho=Bicho()
+        bicho.modo=Enjambre()
+        bicho.iniEnjambre()
+        return bicho
+    
+    
 
     def obtenerJuego(self):
         return self.juego
@@ -108,9 +117,10 @@ class LaberintoBuilder:
     def fabricarBicho(self,modo,posicion):
         if modo=='Agresivo':
             bicho=self.fabricarBichoAgresivo()
-        if modo=='Perezoso':
+        elif modo=='Perezoso':
             bicho=self.fabricarBichoPerezoso()
+        elif modo=='Enjambre':
+            bicho=self.fabricarBichoEnjambre()
         hab=self.laberinto.obtenerHabitacion(posicion)
         hab.entrar(bicho)
-        #self.fabricar_skin(bicho)
         self.juego.agregar_bicho(bicho)

@@ -48,6 +48,9 @@ class GUI(UserInterface):
             self.canvas.create_text(575, 450, text="VICTORIA", font=("Arial", 40), fill="white")
         ))
 
+    def draw_atacado(self, ente):
+        if 0 < ente.vidas:
+            ente.aceptar(self.visitor)
 
     def dibujarLaberinto(self):
         self.juego.laberinto.aceptar(self.visitor)
@@ -132,9 +135,10 @@ class GUI(UserInterface):
         habitacion = personaje.posicion
         x = habitacion.forma.punto.x + habitacion.forma.extent.x / 2 - 30
         y = habitacion.forma.punto.y + habitacion.forma.extent.y / 2
+        color = personaje.skin.getGUISprite()
         self.master.after(0, lambda: self.visuales.update({
             hash(personaje): self.canvas.create_oval(
-                x - 10, y - 10, x + 10, y + 10, fill="blue"
+                x - 10, y - 10, x + 10, y + 10, fill=color
             )
         }))
 
@@ -146,7 +150,7 @@ class GUI(UserInterface):
         y = habitacion.forma.punto.y + habitacion.forma.extent.y / 2
 
         offset = bicho.posicion.entidades.index(bicho) * 25
-        color = "red"
+        color = bicho.skin.getGUISprite()
         self.canvas.after(0, lambda: self.visuales.update({
             hash(bicho): self.canvas.create_oval(
                 x + offset - 10, y - 10, x + offset + 10, y + 10, fill=color

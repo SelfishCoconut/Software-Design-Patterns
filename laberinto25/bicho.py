@@ -14,18 +14,25 @@ class Bicho(Ente):
     def actua(self):
         while self.estaVivo() and self.juego.fase.running:
             self.modo.actuar(self)
-        print(f"--------------{self.id} ha terminado de actuar--------------")
+        #print(f"--------------{self.id} ha terminado de actuar--------------")
     def iniAgresivo(self):
         self.modo = Agresivo()
         self.poder = 10
         self.vidas = 5
-        self.vidasTotales = 5
+        self.vidasTotales = self.vidas
         self.skin = Skin(self, 'A')
     def iniPerezoso(self):        
         self.poder = 1
         self.vidas = 5
-        self.vidasTotales = 5   
+        self.vidasTotales = self.vidas
         self.skin = Skin(self, 'P')
+
+    def iniEnjambre(self):
+        self.vidas = 1   
+        self.poder = 1
+        self.vidasTotales = self.vidas
+        self.skin = Skin(self, '.')
+        
     def atacar(self):
         self.juego.buscarPersonaje(self)
 
@@ -40,7 +47,7 @@ class Bicho(Ente):
         unVisitor.visitarBicho(self)
 
     def __str__(self):
-        return "Soy un bicho"+self.modo.__str__()
+        return "Bicho "+self.modo.__str__()
 
     def __hash__(self):
         return hash((self.__class__, self.id))

@@ -68,3 +68,6 @@ class UserInterface:
 
     def victoria(self):
         pass
+
+    def draw_atacado(self, ente):
+        pass

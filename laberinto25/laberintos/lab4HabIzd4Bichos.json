@@ -18,6 +18,11 @@
 		{"modo":"Agresivo","posicion":1},
 		{"modo":"Agresivo","posicion":3},
 		{"modo":"Perezoso","posicion":2},
-		{"modo":"Perezoso","posicion":4}
+		{"modo":"Enjambre","posicion":4},
+		{"modo":"Enjambre","posicion":4},
+		{"modo":"Enjambre","posicion":4},
+		{"modo":"Enjambre","posicion":4},
+		{"modo":"Enjambre","posicion":4},
+		{"modo":"Enjambre","posicion":4}
 	]
 }

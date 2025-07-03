@@ -16,7 +16,7 @@ class Ente:
         self.id = Ente._id_counter
         Ente._id_counter += 1
         self.vidas = None
-        self.vidasTotales = None
+        self.vidasTotales = self.vidas
         self.poder = None
         self.posicion = None
         self.juego = None
@@ -60,9 +60,9 @@ class Personaje(Ente):
         super().__init__()
         self.nombre = nombre
         self.vidas = 100
-        self.vidasTotales = 100
+        self.vidasTotales = self.vidas
         self.juego = juego
-        self.poder = poder * 10
+        self.poder = 1
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger("personaje")
         self.lock = get_global_lock()

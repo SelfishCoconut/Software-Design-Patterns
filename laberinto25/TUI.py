@@ -94,7 +94,7 @@ class TUI(UserInterface):
                         while y == alto//2-1:
                             y = randint(i, alto-2)
                         if i == y and j == x:
-                            map += hab.entidades[bcount].skin.getSprite()
+                            map += hab.entidades[bcount].skin.getTUISprite()
                             bcount -= 1
                         else:
                             map += ' '
@@ -115,10 +115,38 @@ class TUI(UserInterface):
     def draw_caminar(self, ente):
         if ente.posicion == ente.juego.personaje.posicion:
             self.visuals.append(hash(ente))
-        elif hash(ente) in self.visuals:
+        if hash(ente) in self.visuals:
             self.visuals.remove(hash(ente))
             self.dibujarHabitacion(self.juego.personaje.posicion)
   
     def draw_bicho_muere(self, ente):
         self.dibujarHabitacion(ente.juego.personaje.posicion)
         print(f"El bicho {ente} ha muerto")
+    
+    def victoria(self):
+        print("\n\n\n\n\n\n\n")
+        print("    __________________")
+        print("   /                  \\")
+        print("  /                    \\")
+        print(" /                      \\")
+        print("|                        |")
+        print("|        VICTORIA        |")
+        print("|                        |")
+        print(" \\                      /")
+        print("  \\                    /")
+        print("   \\__________________/")
+        print("\n\n\n\n\n\n\n")
+    
+    def derrota(self):
+        print("\n\n\n\n\n\n\n")
+        print("    __________________")
+        print("   /                  \\")
+        print("  /                    \\")
+        print(" /                      \\")
+        print("|                        |")
+        print("|        DERROTA!        |")
+        print("|                        |")
+        print(" \\                      /")
+        print("  \\                    /")
+        print("   \\__________________/")
+        print("\n\n\n\n\n\n\n")
