@@ -1,7 +1,7 @@
 from laberinto25.modo import Modo
 from laberinto25.agresivo import Agresivo
 from laberinto25.ente import Ente
-
+from skin import Skin
 class Bicho(Ente):
     def __init__(self):
         super().__init__()
@@ -19,18 +19,19 @@ class Bicho(Ente):
         self.modo = Agresivo()
         self.poder = 10
         self.vidas = 5
-
-    def iniPerezoso(self):
+        self.vidasTotales = 5
+        self.skin = Skin(self, 'A')
+    def iniPerezoso(self):        
         self.poder = 1
         self.vidas = 5
-
+        self.vidasTotales = 5   
+        self.skin = Skin(self, 'P')
     def atacar(self):
         self.juego.buscarPersonaje(self)
 
     def caminar(self):
         self.posicion.caminarAleatorio(self)
-        if self.event_manager is not None:
-            self.event_manager.notify({'type': 'caminar', 'data': self})
+        self.event_manager.notify({'type': 'caminar', 'data': self})
 
     def estaVivo(self):
         return self.vidas > 0

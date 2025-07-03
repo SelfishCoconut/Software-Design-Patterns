@@ -8,6 +8,7 @@ from laberinto25.lock_singleton import get_global_lock
 import logging
 from threading import Lock
 from pynput import keyboard
+from skin import Skin
 
 class Ente:
     _id_counter = 0
@@ -15,12 +16,14 @@ class Ente:
         self.id = Ente._id_counter
         Ente._id_counter += 1
         self.vidas = None
+        self.vidasTotales = None
         self.poder = None
         self.posicion = None
         self.juego = None
         self.estadoEnte = Vivo()
         self.lock = get_global_lock()
         self.event_manager = None
+        self.skin = None
         
     def clonarLaberinto(self,tunel):
         pass
@@ -35,6 +38,7 @@ class Ente:
         if self.vidas <= 0:
             self.vidas = 0
             self.estadoEnte.morir(self)
+        self.event_manager.notify  ({'type': 'atacado', 'data': self})
 
     def esPersonaje(self):
         return False
@@ -56,12 +60,13 @@ class Personaje(Ente):
         super().__init__()
         self.nombre = nombre
         self.vidas = 100
+        self.vidasTotales = 100
         self.juego = juego
         self.poder = poder * 10
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger("personaje")
         self.lock = get_global_lock()
-
+        self.skin = Skin(self, '@')
     def clonarLaberinto(self,tunel):
         tunel.puedeClonarLaberinto()
 

@@ -6,7 +6,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/laberinto25/__main__.py",
             "console": "integratedTerminal",
-            "args": "${command:pickArgs}",
+            //"args": "${command:pickArgs}",
             "env": {
                 "PYTHONPATH": "${workspaceFolder}"
             }

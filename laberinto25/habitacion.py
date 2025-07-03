@@ -7,6 +7,8 @@ class Habitacion(Contenedor):
         self.entidades=[]
         self.visitado = False
 
+
+
     def entrar(self, alguien):
         if alguien.posicion is not None: 
             alguien.posicion.salir(alguien)

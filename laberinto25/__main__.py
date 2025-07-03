@@ -20,8 +20,8 @@ if __name__ == "__main__":
     file_path = os.path.join(os.path.dirname(__file__), 'laberintos', 'lab4HabIzd4Bichos.json')
     
     if len(sys.argv) > 1:
-        mainTerminal(file_path)
-    else:
         mainGUI(file_path)
+    else:
+        mainTerminal(file_path)
 
 

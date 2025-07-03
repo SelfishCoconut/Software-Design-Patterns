@@ -5,10 +5,10 @@ class Modo:
 
     def actuar(self, bicho):
         self.dormir(bicho)
-        with self.lock:
+        with get_global_lock():
             if bicho.estaVivo() and bicho.juego.fase.running:  
                 self.caminar(bicho)
-        with self.lock:
+        with get_global_lock():
             if bicho.estaVivo() and bicho.juego.fase.running:
                 self.atacar(bicho)
 
